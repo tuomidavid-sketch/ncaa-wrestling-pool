@@ -74,6 +74,21 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);min-he
 .btn-r{background:var(--red);color:#fff}
 #dbg{font-size:10px;color:var(--dm);margin-top:12px;font-family:monospace;max-height:80px;overflow:auto;word-break:break-all;padding:6px;background:var(--s1);border-radius:6px;border:1px solid var(--bd)}
 @media(max-width:600px){.hd h1{font-size:24px;letter-spacing:2px}.tab{font-size:11px;letter-spacing:.5px;padding:11px 2px}.wrap{padding:8px}.lbr{grid-template-columns:28px 1fr 30px 30px 42px 42px;padding:8px}.psc{font-size:18px}.rbar{gap:6px}}
+.gw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.grtbl{border-collapse:collapse;width:max-content;min-width:100%}
+.grtbl th,.grtbl td{padding:6px 8px;border:1px solid var(--bd);white-space:nowrap;font-size:12px}
+.grtbl th{font-family:'Barlow Condensed';letter-spacing:1px;text-transform:uppercase;color:var(--dm);background:var(--s1);font-size:11px;text-align:center}
+.grtbl th.nm,.grtbl td.nm{text-align:left;position:sticky;left:0;background:var(--bg);z-index:1;min-width:110px}
+.grtbl td.nm{font-family:'Barlow Condensed';font-size:14px;font-weight:600}
+.grtbl td.tot{font-family:'Bebas Neue';font-size:20px;color:var(--gb);text-align:center;min-width:52px}
+.grtbl th.tot{text-align:center}
+.grtbl td.gc{text-align:center;color:var(--tx);min-width:80px}
+.gc-n{display:block;font-size:11px;color:var(--dm)}
+.gc-p{display:block;font-family:'Barlow Condensed';font-size:14px;font-weight:700;color:var(--grn)}
+.gc-p.z{color:var(--dm)}
+.grtbl tr:nth-child(even) td{background:rgba(37,45,69,.2)}
+.grtbl tr:nth-child(even) td.nm{background:rgba(20,26,46,.95)}
+.grtbl tr.me td.nm{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -83,6 +98,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);min-he
 <div class="tab on" data-t="lb">Leaderboard</div>
 <div class="tab" data-t="dr">My Picks</div>
 <div class="tab" data-t="sc">All Scores</div>
+<div class="tab" data-t="gr">Grid</div>
 </div>
 <div class="wrap">
 <div class="pn on" id="p-lb">
@@ -120,6 +136,9 @@ Brock Hardy (Nebraska) won by tech fall over Dario Lemus (TF-1.5 5:47 (18-1))"><
 <div id="cStatus" style="font-size:11px;color:var(--dm);margin-top:8px;max-height:120px;overflow:auto"></div>
 </div>
 </div>
+</div>
+<div class="pn" id="p-gr">
+<div class="gw"><div id="grb"><div class="ey">Loading…</div></div></div>
 </div>
 <div class="toast" id="tst"></div>
 <script>
@@ -207,7 +226,7 @@ async function loadAll(){
     dbOk=true;
     setSt(true,'Connected — '+allPlayers.length+' in pool');
     log('OK: '+allPlayers.length+'p, '+Object.keys(allScores).length+'s');
-    rlb();rsc();
+    rlb();rsc();rgr();
     if(lr){
       document.getElementById('ri').innerHTML='Last: <span class="tm">'+lr+'</span>';
       document.getElementById('ri2').innerHTML='Last: <span class="tm">'+lr+'</span>';
@@ -225,7 +244,7 @@ document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.pn').forEach(x=>x.classList.remove('on'));
   t.classList.add('on');document.getElementById('p-'+t.dataset.t).classList.add('on');
-  if(t.dataset.t==='lb'||t.dataset.t==='sc')loadAll();
+  if(t.dataset.t==='lb'||t.dataset.t==='sc'||t.dataset.t==='gr')loadAll();
   if(t.dataset.t==='dr')rdraft();
 })});
 
@@ -349,6 +368,35 @@ function rsc(){
     const rows=W[wt].map(([seed,nm,sch])=>{const pts=ws(wt,seed);
       return `<div class="swr"><span class="ssd">${seed}</span><span class="sn">${nm} <span class="ss">${sch}</span></span><span class="sp2${pts===0?' z':''}">${pts>0?pts.toFixed(1):'—'}</span></div>`;}).join('');
     return `<div class="swh">${wt} lbs</div>${rows}`;}).join('');
+}
+
+function rgr(){
+  const b=document.getElementById('grb');
+  if(!allPlayers.length){b.innerHTML='<div class="ey"><div class="ic">🏆</div>Submit picks in "My Picks" to start.</div>';return}
+  const revealed=picksRevealed();
+  const ent=allPlayers.map(p=>({id:p.id,name:p.name,picks:p.picks,self:p.id===myId}));
+  if(revealed) ent.sort((a,b2)=>ptot(b2.picks)-ptot(a.picks));
+  else ent.sort((a,b2)=>a.name.localeCompare(b2.name));
+  const hdr='<tr><th class="nm">Player</th><th class="tot">Total</th>'+WTS.map(wt=>`<th>${wt}</th>`).join('')+'</tr>';
+  const rows=ent.map(e=>{
+    const tot=revealed?ptot(e.picks):null;
+    const cells=WTS.map(wt=>{
+      const s=e.picks[wt];
+      if(!s)return'<td class="gc"><span class="gc-p z">—</span></td>';
+      if(!revealed)return`<td class="gc"><span class="gc-n">#${s}</span></td>`;
+      const wr=W[wt].find(w=>w[0]===s);
+      const pts=ws(wt,s);
+      const ln=wr?wr[1].split(' ').pop():'?';
+      const bst=wbr(wt,s);
+      const bIcon=bst==='champ'?'🟢':bst==='conso'?'🟡':bst==='out'?'🔴':'';
+      return `<td class="gc">${bIcon?bIcon+' ':''}<span class="gc-n">#${s} ${ln}</span><span class="gc-p${pts===0?' z':''}">${pts>0?pts.toFixed(1):'—'}</span></td>`;
+    }).join('');
+    const totCell=revealed
+      ?`<td class="tot">${tot>0?tot.toFixed(1):'0'}</td>`
+      :`<td class="tot" style="color:var(--dm);font-size:14px">🔒</td>`;
+    return `<tr${e.self?' class="me"':''}><td class="nm">${e.name}${e.self?' <span style="font-size:10px;color:var(--dm)">(you)</span>':''}</td>${totCell}${cells}</tr>`;
+  }).join('');
+  b.innerHTML=`<table class="grtbl"><thead>${hdr}</thead><tbody>${rows}</tbody></table>`;
 }
 
 // ====================== REFRESH ======================
