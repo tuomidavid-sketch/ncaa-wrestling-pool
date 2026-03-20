@@ -387,7 +387,7 @@ async function loadAll(){
     // Merge any Supabase scores on top
     try{
       const sRows=await sbSelect('scores');
-      (sRows||[]).forEach(r=>{if(parseFloat(r.points)>0)allScores[r.wrestler]=parseFloat(r.points)});
+      (sRows||[]).forEach(r=>{const v=parseFloat(r.points);if(v>0)allScores[r.wrestler]=Math.max(v,allScores[r.wrestler]||0)});
     }catch(e){}
     // Start with baked-in brackets
     allBrackets=Object.assign({},BAKED_BRACKETS);
