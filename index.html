@@ -126,10 +126,14 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);min-he
 <div style="margin-top:40px;text-align:center"><span id="cTrig" onclick="showC()" style="font-size:10px;color:var(--bd);cursor:default;user-select:none">⚙</span></div>
 <div id="cPanel" style="display:none;margin-top:12px;padding:14px;background:var(--s1);border:1px solid var(--bd);border-radius:10px">
 <div style="font-family:'Barlow Condensed';font-size:13px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Commissioner: Update Scores</div>
-<div style="font-size:11px;color:var(--dm);margin-bottom:10px;line-height:1.5">Go to <a href="https://www.flowrestling.org/articles/15661479-2026-ncaa-wrestling-championships-results-and-brackets" target="_blank" style="color:var(--gb)">FloWrestling Results</a>, select all bout results, copy, and paste below. Scores calculate automatically.</div>
-<textarea id="pasteBox" style="width:100%;min-height:180px;padding:10px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:monospace;font-size:11px;resize:vertical;outline:none" placeholder="Paste results here. Example format:
+<div style="font-size:11px;color:var(--dm);margin-bottom:4px;line-height:1.5">CHAMPIONSHIP MATCHES — <a href="https://www.flowrestling.org/articles/15661479-2026-ncaa-wrestling-championships-results-and-brackets" target="_blank" style="color:var(--gb)">FloWrestling Results</a></div>
+<textarea id="pasteBox" style="width:100%;min-height:120px;padding:10px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:monospace;font-size:11px;resize:vertical;outline:none" placeholder="Paste championship results here. Example:
 Luke Lilledahl (Penn State) won by decision over Jett Strickenberger (Dec 4-2)
 Brock Hardy (Nebraska) won by tech fall over Dario Lemus (TF-1.5 5:47 (18-1))"></textarea>
+<div style="font-size:11px;color:var(--dm);margin:10px 0 4px;line-height:1.5">CONSOLATION MATCHES — <a href="https://www.themat.com/news/2026/march/19/live-updates-ncaa-di-men-s-wrestling-championships-session-ii" target="_blank" style="color:var(--gb)">Session II</a> &middot; <a href="https://www.themat.com/news/2026/march/20/live-updates-ncaa-di-men-s-wrestling-championships-session-iii" target="_blank" style="color:var(--gb)">Session III</a> &middot; <a href="https://www.themat.com/news/2026/march/20/live-updates-ncaa-di-men-s-wrestling-championships-session-iv" target="_blank" style="color:var(--gb)">Session IV (Blood Round)</a></div>
+<textarea id="pasteBoxConso" style="width:100%;min-height:120px;padding:10px;background:var(--bg);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:monospace;font-size:11px;resize:vertical;outline:none" placeholder="Paste consolation bouts here. All wins score as consolation (0.5 pts/win). Supports:
+Carter Young (Maryland) dec. Koy Buesgens (NC State), 11-4
+Camden McDanel (Nebraska) won by decision over Rademacher (Oregon), (Dec 13-5)"></textarea>
 <div style="display:flex;gap:8px;margin-top:8px">
 <button class="btn btn-g" onclick="parseAndPush()" style="flex:1">Calculate & Push Scores</button>
 <button class="btn btn-d" onclick="clearScores()" style="padding:10px 14px">Clear All</button>
@@ -401,68 +405,73 @@ function rgr(){
 }
 
 // ====================== REFRESH ======================
-async function parseAndPush(){
-  const st=document.getElementById('cStatus');
-  const raw=document.getElementById('pasteBox').value.trim();
-  if(!raw){st.innerHTML='<span style="color:var(--red)">Paste results first!</span>';return;}
-  st.innerHTML='<span style="color:var(--grn)">Parsing...</span>';
-  try{
-    // Build name lookup: lowercase -> db name
-    const nameMap={};
-    for(const wt of WTS)for(const w of W[wt]){const nm=w[1];nameMap[nm.toLowerCase()]=nm;
-      // Also map "First Last" without middle initials etc
-      const parts=nm.split(' ');if(parts.length>2)nameMap[(parts[0]+' '+parts[parts.length-1]).toLowerCase()]=nm;
-    }
-    const resolve=(raw)=>{const k=raw.toLowerCase().trim();return nameMap[k]||raw.trim();};
-    const pts={};// wrestler -> {adv:0, bonus:0}
-    // Detect if bout is consolation
-    const lines=raw.split('\n');
-    let isConso=false;
-    const losses={}; // lowercase wrestler name -> loss count
-    const brackets={}; // wrestler -> "champ" | "conso" | "out"
-    const allNames=new Set(); // track everyone we've seen
-    for(const line of lines){
-      const lo=line.trim().toLowerCase();
-      // Consolation headings (still needed for advancement point calc)
+function parseBlock(lines,forceIsConso,pts,losses,allNames,resolve){
+  let isConso=forceIsConso;
+  for(const line of lines){
+    const lo=line.trim().toLowerCase();
+    if(!forceIsConso){
       if(lo.includes('consolation')||lo.includes('conso')||lo.includes('blood round')||lo.includes('wrestleback')){isConso=true;continue;}
       if(lo.match(/round of \d/)||lo.includes('quarterfinal')||lo.includes('semifinal')||lo.includes('final')||lo.includes('championship')||lo.includes('champ round')||lo.includes('pigtail')||lo.match(/1st place|3rd place/)){isConso=false;continue;}
       if(lo.match(/5th place|7th place/)){isConso=true;continue;}
-      // Match: Name (School) ... won by TYPE over Name (School) ... (Result)
-      const m=line.match(/^(.+?)\s*\([^)]+\)\s*[\d\-]*\s*won by\s+(.+?)\s+over\s+(.+?)\s*\([^)]+\)\s*[\d\-]*\s*\(([^)]+)\)/i);
-      if(!m)continue;
-      const winner=resolve(m[1]);
-      const loser=resolve(m[3]);
-      const wKey=winner.toLowerCase();
-      const lKey=loser.toLowerCase();
-      allNames.add(wKey);allNames.add(lKey);
-      // Count losses
-      losses[lKey]=(losses[lKey]||0)+1;
-      const method=m[2].trim().toLowerCase();
-      const detail=m[4].trim();
-      if(!pts[winner])pts[winner]={adv:0,bonus:0};
-      // Advancement points
-      pts[winner].adv+=isConso?0.5:1;
-      // Bonus points based on win method
-      const isForf=method.includes('forfeit')||method.includes('default')||method.includes('disqualification')||method.includes('medical');
-      if(isForf){
-        pts[winner].bonus+=2;
-      }else if(method.includes('fall')||detail.match(/^Fall/i)){
-        pts[winner].bonus+=2;
-      }else if(method.includes('tech fall')||detail.match(/^TF/i)){
-        pts[winner].bonus+=1.5;
-      }else if(method.includes('major')||detail.match(/^MD/i)){
-        pts[winner].bonus+=1;
-      }
     }
-    // Build bracket status: 0 losses = champ, 1 loss = conso, 2+ = out
+    // FloWrestling format: Name (School) won by TYPE over Name (School) (Result)
+    const m1=line.match(/^(.+?)\s*\([^)]+\)\s*[\d\-]*\s*won by\s+(.+?)\s+over\s+(.+?)\s*\([^)]+\)\s*[\d\-]*\s*\(([^)]+)\)/i);
+    // themat.com format: [No. X] Name (School) dec./fall/maj. dec. [No. X] Name (School)
+    const m2=!m1&&line.match(/^(?:No\.\s*\d+\s+)?(.+?)\s*\([^)]+\)\s*(tech\.?\s*fall|maj\.?\s*dec\.|dec\.|fall|forfeit|default)\s+(?:No\.\s*\d+\s+)?(.+?)\s*\([^)]+\)/i);
+    if(m1){
+      const winner=resolve(m1[1]),loser=resolve(m1[3]);
+      const wk=winner.toLowerCase(),lk=loser.toLowerCase();
+      allNames.add(wk);allNames.add(lk);
+      losses[lk]=(losses[lk]||0)+1;
+      if(!pts[winner])pts[winner]={adv:0,bonus:0};
+      pts[winner].adv+=isConso?0.5:1;
+      const method=m1[2].trim().toLowerCase(),detail=m1[4].trim();
+      const isForf=method.includes('forfeit')||method.includes('default')||method.includes('disqualification')||method.includes('medical');
+      if(isForf)pts[winner].bonus+=2;
+      else if(method.includes('fall')||detail.match(/^Fall/i))pts[winner].bonus+=2;
+      else if(method.includes('tech fall')||detail.match(/^TF/i))pts[winner].bonus+=1.5;
+      else if(method.includes('major')||detail.match(/^MD/i))pts[winner].bonus+=1;
+    }else if(m2){
+      const winner=resolve(m2[1]),loser=resolve(m2[3]);
+      const wk=winner.toLowerCase(),lk=loser.toLowerCase();
+      allNames.add(wk);allNames.add(lk);
+      losses[lk]=(losses[lk]||0)+1;
+      if(!pts[winner])pts[winner]={adv:0,bonus:0};
+      pts[winner].adv+=isConso?0.5:1;
+      const method=m2[2].trim().toLowerCase();
+      if(method.includes('forfeit')||method.includes('default'))pts[winner].bonus+=2;
+      else if(method.startsWith('fall'))pts[winner].bonus+=2;
+      else if(method.includes('tech'))pts[winner].bonus+=1.5;
+      else if(method.includes('maj'))pts[winner].bonus+=1;
+    }
+  }
+}
+
+async function parseAndPush(){
+  const st=document.getElementById('cStatus');
+  const rawChamp=document.getElementById('pasteBox').value.trim();
+  const rawConso=document.getElementById('pasteBoxConso').value.trim();
+  if(!rawChamp&&!rawConso){st.innerHTML='<span style="color:var(--red)">Paste results first!</span>';return;}
+  st.innerHTML='<span style="color:var(--grn)">Parsing...</span>';
+  try{
+    const nameMap={};
+    for(const wt of WTS)for(const w of W[wt]){const nm=w[1];nameMap[nm.toLowerCase()]=nm;
+      const parts=nm.split(' ');if(parts.length>2)nameMap[(parts[0]+' '+parts[parts.length-1]).toLowerCase()]=nm;
+    }
+    const resolve=(raw)=>{const k=raw.toLowerCase().trim();return nameMap[k]||raw.trim();};
+    const pts={},losses={},allNames=new Set();
+    if(rawChamp)parseBlock(rawChamp.split('\n'),false,pts,losses,allNames,resolve);
+    if(rawConso)parseBlock(rawConso.split('\n'),true,pts,losses,allNames,resolve);
+    const brackets={};
     for(const name of allNames){
       const l=losses[name]||0;
       if(l===0)brackets[name]='champ';
       else if(l===1)brackets[name]='conso';
       else brackets[name]='out';
     }
-    // Also detect placement lines: "1st Place - Name (School)" etc
-    for(const line of lines){
+    // Placement lines
+    const allLines=[...(rawChamp?rawChamp.split('\n'):[]),...(rawConso?rawConso.split('\n'):[])];
+    for(const line of allLines){
       const pm=line.match(/(1st|2nd|3rd|4th|5th|6th|7th|8th)\s*(?:place|Place)\s*[-–:]\s*(.+?)\s*\(/i);
       if(!pm)continue;
       const place=pm[1].toLowerCase();
@@ -471,17 +480,14 @@ async function parseAndPush(){
       const plPts={['1st']:16,['2nd']:12,['3rd']:10,['4th']:9,['5th']:7,['6th']:6,['7th']:4,['8th']:3};
       pts[name].place=plPts[place]||0;
     }
-    // Build rows
     const rows=[];
     for(const[name,d]of Object.entries(pts)){
       const total=(d.place||0)+d.adv+d.bonus;
       if(total>0)rows.push({wrestler:name,points:Math.round(total*10)/10});
     }
     if(!rows.length){st.innerHTML='<span style="color:var(--red)">No results parsed. Check format.</span>';return;}
-    // Full replace — clear old scores, push new totals
     try{await sbDeleteWhere('scores','wrestler','neq','___');}catch(e){}
     await sbUpsert('scores',rows);
-    // Store bracket status
     await sbUpsert('meta',{key:'brackets',value:JSON.stringify(brackets)});
     const ts=new Date().toLocaleString();
     await sbUpsert('meta',{key:'lastRefresh',value:ts});
@@ -504,6 +510,8 @@ async function clearScores(){
   try{
     await sbDeleteWhere('scores','wrestler','neq','___');
     await sbUpsert('meta',{key:'lastRefresh',value:'Cleared '+new Date().toLocaleString()});
+    document.getElementById('pasteBox').value='';
+    document.getElementById('pasteBoxConso').value='';
     await loadAll();
     toast('All scores cleared.');
     document.getElementById('cStatus').innerHTML='<span style="color:var(--dm)">Scores cleared.</span>';
