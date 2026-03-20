@@ -74,21 +74,6 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);min-he
 .btn-r{background:var(--red);color:#fff}
 #dbg{font-size:10px;color:var(--dm);margin-top:12px;font-family:monospace;max-height:80px;overflow:auto;word-break:break-all;padding:6px;background:var(--s1);border-radius:6px;border:1px solid var(--bd)}
 @media(max-width:600px){.hd h1{font-size:24px;letter-spacing:2px}.tab{font-size:11px;letter-spacing:.5px;padding:11px 2px}.wrap{padding:8px}.lbr{grid-template-columns:28px 1fr 30px 30px 42px 42px;padding:8px}.psc{font-size:18px}.rbar{gap:6px}}
-.gw{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.grtbl{border-collapse:collapse;width:max-content;min-width:100%}
-.grtbl th,.grtbl td{padding:6px 8px;border:1px solid var(--bd);white-space:nowrap;font-size:12px}
-.grtbl th{font-family:'Barlow Condensed';letter-spacing:1px;text-transform:uppercase;color:var(--dm);background:var(--s1);font-size:11px;text-align:center}
-.grtbl th.nm,.grtbl td.nm{text-align:left;position:sticky;left:0;background:var(--bg);z-index:1;min-width:110px}
-.grtbl td.nm{font-family:'Barlow Condensed';font-size:14px;font-weight:600}
-.grtbl td.tot{font-family:'Bebas Neue';font-size:20px;color:var(--gb);text-align:center;min-width:52px}
-.grtbl th.tot{text-align:center}
-.grtbl td.gc{text-align:center;color:var(--tx);min-width:80px}
-.gc-n{display:block;font-size:11px;color:var(--dm)}
-.gc-p{display:block;font-family:'Barlow Condensed';font-size:14px;font-weight:700;color:var(--grn)}
-.gc-p.z{color:var(--dm)}
-.grtbl tr:nth-child(even) td{background:rgba(37,45,69,.2)}
-.grtbl tr:nth-child(even) td.nm{background:rgba(20,26,46,.95)}
-.grtbl tr.me td.nm{color:var(--gold)}
 </style>
 </head>
 <body>
@@ -98,7 +83,6 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--tx);min-he
 <div class="tab on" data-t="lb">Leaderboard</div>
 <div class="tab" data-t="dr">My Picks</div>
 <div class="tab" data-t="sc">All Scores</div>
-<div class="tab" data-t="gr">Grid</div>
 </div>
 <div class="wrap">
 <div class="pn on" id="p-lb">
@@ -136,9 +120,6 @@ Brock Hardy (Nebraska) won by tech fall over Dario Lemus (TF-1.5 5:47 (18-1))"><
 <div id="cStatus" style="font-size:11px;color:var(--dm);margin-top:8px;max-height:120px;overflow:auto"></div>
 </div>
 </div>
-</div>
-<div class="pn" id="p-gr">
-<div class="gw"><div id="grb"><div class="ey">Loading…</div></div></div>
 </div>
 <div class="toast" id="tst"></div>
 <script>
@@ -211,29 +192,206 @@ const LS='ncaa_pool_v3';
 function ldLocal(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');if(s.myPicks)myPicks=s.myPicks;if(s.myName)myName=s.myName;if(s.myId)myId=s.myId}catch(e){}}
 function svLocal(){localStorage.setItem(LS,JSON.stringify({myPicks,myName,myId}))}
 
+// ====================== BAKED-IN SCORES (Session 3 Brackets) ======================
+const BAKED_SCORES={
+// 125
+"Luke Lilledahl":10,"Troy Spratley":10,"Jacob Moran":10,"Marc-Anthony McGowan":11,
+"Dean Peterson":3,"Sheldon Seymour":4,"Jore Volk":2,"Eddie Ventresca":2,
+"Nico Provo":3,"Tyler Klinsky":6.5,"Vincent Robinson":3,"Jett Strickenberger":4,
+"Spencer Moore":1,"Kael Lauridsen":0.5,"Conrad Hendriksen":0.5,"Tyler Chappell":0.5,
+"Kysen Terukina":0.5,"Brady Roark":1.5,"Cooper Flynn":0.5,"Desmond Pleasant":0.5,
+"Ezekiel Witt":2,"Nic Bouzakis":3.5,"Stevo Poulin":1.5,"Maximo Renteria":1,
+"Mack Mauger":1,"Sulayman Bah":2,
+// 133
+"Jax Forrest":14,"Aaron Seidel":13.5,"Marcus Blaze":13.5,"Ben Davino":13,
+"Markel Baker":2,"Kyler Larkin":5,"Drake Ayala":4.5,"Lucas Byrd":2,
+"Tyler Knox":1,"Jacob Van Dee":2.5,"Julian Farber":4,"Maximilian Leete":2,
+"Braxton Brown":0.5,"Tyler Ferrara":1,"Gage Walker":1,"Dominick Serrano":1,
+"T.K. Davis":1,"Evan Mougalian":1,"Zan Fugitt":0.5,"Will Betancourt":0.5,
+"Garrett Grice":1,"Gunner Andrick":0.5,"Marcel Lopez":2.5,"Ethan Berginc":1.5,
+"Carter Schmidt":2,
+// 141
+"Jesse Mendez":13.5,"Luke Stanich":11.5,"Brock Hardy":10.5,"Sergio Vega":11,
+"Vance Vombaur":3,"Anthony Echemendia":3,"Vince Cornella":4,"Nasir Bailey":3,
+"Elijah Griffin":2,"CJ Composto":2,"Wyatt Henson":3,"Carter Nogle":3.5,
+"Ryan Jack":1.5,"Joey Olivieri":1.5,"Jack Consiglio":1.5,"Luke Simcox":0.5,
+"Jordan Titus":1,"Braeden Davis":1,"Haiden Drury":0.5,"Gable Porter":0.5,
+"Tyler Wells":1.5,"Dylan Chappell":1,"Nash Singleton":1,"Caedyn Ricciardi":1,
+"Aldo Hernandez":1,
+// 149
+"Shayne Van Ness":12.5,"Chance Lamer":10,"Lachlan McNeil":12,"Aden Valencia":10,
+"Casey Swiderski":3,"Carter Young":2,"Cross Wasilewski":3,"Jaxon Joy":3.5,
+"Ryder Block":3.5,"Gabe Willochell":2,"Collin Gaj":3,"Jacob Frost":4,
+"Michael Gioffre":2.5,"Max Petersen":4,"Ethan Stiles":2,"Kaden Cassidy":3,
+"Koy Buesgens":1.5,"Andre Gonzales":0.5,"Brock Herman":0.5,"Caleb Tyus":1,
+"David Evans":1,"Austin McBurney":1.5,"Eugene Harney":0.5,"Caleb Rathjen":0.5,
+// 157
+"PJ Duke":14.5,"Landon Robideau":9,"Ty Watters":11,"Antrell Taylor":10.5,
+"Brandon Cannon":2,"Kaleb Larkin":5,"Meyer Shapiro":3,"Kannon Webster":3,
+"Cameron Catrabone":2,"Jude Swisher":2,"Kai Owen":3.5,"Daniel Cardenas":4.5,
+"Cael Swensen":1.5,"Jaivon Jones":1,"Vinny Zerban":1.5,"Bryce Lowery":2.5,
+"Ethen Miller":3.5,"Dylan Evans":1,"Kaleb Burgess":1.5,"DJ McGee":1,
+"Jimmy Harrington":1,"Charlie Millard":1,"Logan Rozynski":1,"Luke Mechler":1,
+"Yannis Charles":1,
+// 165
+"Mitchell Mesenbrink":11.5,"Cesar Alvan":12,"Mikey Caliendo":13.5,"Joey Blaze":10,
+"Bryce Hepner":2,"Nicco Ruiz":3,"EJ Parco":2,"Will Denny":3,
+"Max Brignola":2,"Ryder Downey":3,"Andrew Sparks":2.5,"Paddy Gallagher":4,
+"Cody Walsh":1.5,"Sean Seefeldt":0.5,"Cody Goebel":0.5,"Ty Whalen":1.5,
+"Thomas Snipes":0.5,"LJ Araujo":2,"Tyler Lillard":2.5,"Jared Keslar":1.5,
+"LaDarion Lockett":1,"Matty Bianchi":1,"Noah Mulvaney":1,"Connor Euton":1.5,
+// 174
+"Levi Haines":14,"Patrick Kennedy":9,"Christopher Minto":12.5,"Cam Steed":12.5,
+"Beau Mantanona":2,"Carson Kharchla":3,"MJ Gaitan":4,"Danny Wask":2,
+"Simon Ruiz":6.5,"Matty Singleton":3,"Carter Schubert":2,"Colin Kelly":2.5,
+"Moses Espinoza-Owens":1,"Alex Facundo":3.5,"Carter Baer":1,"Lenny Pinto":0.5,
+"Sergio Desiante":1,"Jared Simma":0.5,"Daschle Lamer":1,"Logan Messer":1,
+"Myles Takats":1,"Brody Baumann":0.5,"Luca Augustine":2.5,"Nick Fine":1,
+"Grant O'Dell":1,
+// 184
+"Rocco Welsh":13.5,"Brock Mantanona":12,"Max McEnelly":10.5,"Angelo Ferrari":10,
+"Silas Allred":3,"Brian Soldano":2,"Eddie Neitenbach":3,"Aeoden Sinclair":3.5,
+"Caleb Campos":2,"Zack Ryder":3,"James Conway":2,"Rylan Rogers":2,
+"Sal Perrine":1.5,"Jaden Bullock":1.5,"Shane Cartagena-Walsh":1,"Dylan Fishback":1,
+"Chris Moore":2.5,"Caleb Uhlenhopp":0.5,"Malachi DuVall":2.5,"Abraham Wojcikiewicz":2,
+"Nick Fox":0.5,"Jared McGill":0.5,"Chase Kranitz":0.5,"Jake Dailey":0.5,"Sam Goin":1,
+// 197
+"Josh Barr":13,"Joey Novak":14,"Stephen Little":9,"Cody Merrill":10.5,
+"Angelo Posada":4,"Colton Hawks":2,"Camden McDanel":3,"Remy Cotton":3,
+"Branson John":1.5,"Luke Geog":1.5,"Gabe Arnold":1.5,"Andrew Reall":1.5,
+"Rocky Elam":1,"Mac Stout":1.5,"Justin Rademacher":1,"Sonny Sasso":2.5,
+"Gabe Sollars":2,"Zayne Lehman":1,"Rune Lawrence":1,"Evan Bates":1.5,
+"Dillon Bechtold":1,"Brock Zurawski":0.5,"Bennett Berge":1,"Mikey Squires":1.5,
+"Karson Tompkins":1,
+// 285
+"Yonger Bastida":12,"AJ Ferrari":11.5,"Taye Ghadiali":13,"Isaac Trumble":12,
+"Ben Kueter":2,"Juan Mora":2,"Hunter Catka":2,"Konner Doucet":2,
+"David Szuba":4.5,"Braxton Amos":3.5,"Dayton Pitzer":5.5,"Christian Carroll":4.5,
+"Vincent Mueller":2.5,"Connor Barket":1.5,"Spencer Lanosga":0.5,"Koy Hopke":1.5,
+"Jack Forbes":1.5,"Nathan Taylor":2.5,"Stephan Monchery":0.5,"Nick Feldman":1,
+"Cole Mirasola":3,"Jimmy Mullen":1,"Brady Colbert":1.5,"Devon Dawson":1,"Mason Rebuck":1
+};
+
+const BAKED_BRACKETS={
+// 125
+"luke lilledahl":"champ","troy spratley":"champ","jacob moran":"champ","marc-anthony mcgowan":"champ",
+"dean peterson":"conso","sheldon seymour":"conso","jore volk":"conso","eddie ventresca":"conso",
+"nico provo":"conso","tyler klinsky":"conso","vincent robinson":"conso","jett strickenberger":"conso",
+"spencer moore":"out","kael lauridsen":"out","conrad hendriksen":"out","tyler chappell":"out",
+"kysen terukina":"out","brady roark":"out","cooper flynn":"out","desmond pleasant":"out",
+"ezekiel witt":"out","nic bouzakis":"out","stevo poulin":"out","maximo renteria":"out",
+"mack mauger":"out","sulayman bah":"out",
+// 133
+"jax forrest":"champ","aaron seidel":"champ","marcus blaze":"champ","ben davino":"champ",
+"markel baker":"conso","kyler larkin":"conso","drake ayala":"conso","lucas byrd":"conso",
+"tyler knox":"conso","jacob van dee":"conso","julian farber":"conso","maximilian leete":"conso",
+"braxton brown":"out","tyler ferrara":"out","gage walker":"out","dominick serrano":"out",
+"t.k. davis":"out","evan mougalian":"out","zan fugitt":"out","will betancourt":"out",
+"garrett grice":"out","gunner andrick":"out","marcel lopez":"out","ethan berginc":"out",
+"carter schmidt":"out",
+// 141
+"jesse mendez":"champ","luke stanich":"champ","brock hardy":"champ","sergio vega":"champ",
+"vance vombaur":"conso","anthony echemendia":"conso","vince cornella":"conso","nasir bailey":"conso",
+"elijah griffin":"conso","cj composto":"conso","wyatt henson":"conso","carter nogle":"conso",
+"ryan jack":"out","joey olivieri":"out","jack consiglio":"out","luke simcox":"out",
+"jordan titus":"out","braeden davis":"out","haiden drury":"out","gable porter":"out",
+"tyler wells":"out","dylan chappell":"out","nash singleton":"out","caedyn ricciardi":"out",
+"aldo hernandez":"out",
+// 149
+"shayne van ness":"champ","chance lamer":"champ","lachlan mcneil":"champ","aden valencia":"champ",
+"casey swiderski":"conso","carter young":"conso","cross wasilewski":"conso","jaxon joy":"conso",
+"ryder block":"conso","gabe willochell":"conso","collin gaj":"conso","jacob frost":"conso",
+"michael gioffre":"out","max petersen":"out","ethan stiles":"out","kaden cassidy":"out",
+"koy buesgens":"out","andre gonzales":"out","brock herman":"out","caleb tyus":"out",
+"david evans":"out","austin mcburney":"out","eugene harney":"out","caleb rathjen":"out",
+// 157
+"pj duke":"champ","landon robideau":"champ","ty watters":"champ","antrell taylor":"champ",
+"brandon cannon":"conso","kaleb larkin":"conso","meyer shapiro":"conso","kannon webster":"conso",
+"cameron catrabone":"conso","jude swisher":"conso","kai owen":"conso","daniel cardenas":"conso",
+"cael swensen":"out","jaivon jones":"out","vinny zerban":"out","bryce lowery":"out",
+"ethen miller":"out","dylan evans":"out","kaleb burgess":"out","dj mcgee":"out",
+"jimmy harrington":"out","charlie millard":"out","logan rozynski":"out","luke mechler":"out",
+"yannis charles":"out",
+// 165
+"mitchell mesenbrink":"champ","cesar alvan":"champ","mikey caliendo":"champ","joey blaze":"champ",
+"bryce hepner":"conso","nicco ruiz":"conso","ej parco":"conso","will denny":"conso",
+"max brignola":"conso","ryder downey":"conso","andrew sparks":"conso","paddy gallagher":"conso",
+"cody walsh":"out","sean seefeldt":"out","cody goebel":"out","ty whalen":"out",
+"thomas snipes":"out","lj araujo":"out","tyler lillard":"out","jared keslar":"out",
+"ladarion lockett":"out","matty bianchi":"out","noah mulvaney":"out","connor euton":"out",
+// 174
+"levi haines":"champ","patrick kennedy":"champ","christopher minto":"champ","cam steed":"champ",
+"beau mantanona":"conso","carson kharchla":"conso","mj gaitan":"conso","danny wask":"conso",
+"simon ruiz":"conso","matty singleton":"conso","carter schubert":"conso","colin kelly":"conso",
+"moses espinoza-owens":"out","alex facundo":"out","carter baer":"out","lenny pinto":"out",
+"sergio desiante":"out","jared simma":"out","daschle lamer":"out","logan messer":"out",
+"myles takats":"out","brody baumann":"out","luca augustine":"out","nick fine":"out",
+"grant o'dell":"out",
+// 184
+"rocco welsh":"champ","brock mantanona":"champ","max mcenelly":"champ","angelo ferrari":"champ",
+"silas allred":"conso","brian soldano":"conso","eddie neitenbach":"conso","aeoden sinclair":"conso",
+"caleb campos":"conso","zack ryder":"conso","james conway":"conso","rylan rogers":"conso",
+"sal perrine":"out","jaden bullock":"out","shane cartagena-walsh":"out","dylan fishback":"out",
+"chris moore":"out","caleb uhlenhopp":"out","malachi duvall":"out","abraham wojcikiewicz":"out",
+"nick fox":"out","jared mcgill":"out","chase kranitz":"out","jake dailey":"out","sam goin":"out",
+// 197
+"josh barr":"champ","joey novak":"champ","stephen little":"champ","cody merrill":"champ",
+"angelo posada":"conso","colton hawks":"conso","camden mcdanel":"conso","remy cotton":"conso",
+"branson john":"conso","luke geog":"conso","gabe arnold":"conso","andrew reall":"conso",
+"rocky elam":"out","mac stout":"out","justin rademacher":"out","sonny sasso":"out",
+"gabe sollars":"out","zayne lehman":"out","rune lawrence":"out","evan bates":"out",
+"dillon bechtold":"out","brock zurawski":"out","bennett berge":"out","mikey squires":"out",
+"karson tompkins":"out",
+// 285
+"yonger bastida":"champ","aj ferrari":"champ","taye ghadiali":"champ","isaac trumble":"champ",
+"ben kueter":"conso","juan mora":"conso","hunter catka":"conso","konner doucet":"conso",
+"david szuba":"conso","braxton amos":"conso","dayton pitzer":"conso","christian carroll":"conso",
+"vincent mueller":"out","connor barket":"out","spencer lanosga":"out","koy hopke":"out",
+"jack forbes":"out","nathan taylor":"out","stephan monchery":"out","nick feldman":"out",
+"cole mirasola":"out","jimmy mullen":"out","brady colbert":"out","devon dawson":"out","mason rebuck":"out"
+};
+
+const BAKED_REFRESH="March 20, 2026 — Session 3 (through Quarterfinals)";
+
 // ====================== LOAD ======================
 async function loadAll(){
   try{
     log('Loading...');
     allPlayers=await sbSelect('players');
-    const sRows=await sbSelect('scores');
-    allScores={};(sRows||[]).forEach(r=>{allScores[r.wrestler]=parseFloat(r.points)});
-    const mRows=await sbSelect('meta');
-    const lrR=(mRows||[]).find(m=>m.key==='lastRefresh');
-    if(lrR)lr=lrR.value;
-    const brR=(mRows||[]).find(m=>m.key==='brackets');
-    allBrackets=brR?JSON.parse(brR.value):{};
+    // Use baked-in scores
+    allScores=Object.assign({},BAKED_SCORES);
+    // Also merge any Supabase scores (in case of manual overrides)
+    try{
+      const sRows=await sbSelect('scores');
+      (sRows||[]).forEach(r=>{if(parseFloat(r.points)>0)allScores[r.wrestler]=parseFloat(r.points)});
+    }catch(e){}
+    // Use baked-in brackets
+    allBrackets=Object.assign({},BAKED_BRACKETS);
+    lr=BAKED_REFRESH;
+    // Also check Supabase meta for overrides
+    try{
+      const mRows=await sbSelect('meta');
+      const lrR=(mRows||[]).find(m=>m.key==='lastRefresh');
+      if(lrR)lr=lrR.value;
+      const brR=(mRows||[]).find(m=>m.key==='brackets');
+      if(brR){const db=JSON.parse(brR.value);Object.assign(allBrackets,db);}
+    }catch(e){}
     dbOk=true;
     setSt(true,'Connected — '+allPlayers.length+' in pool');
     log('OK: '+allPlayers.length+'p, '+Object.keys(allScores).length+'s');
-    rlb();rsc();rgr();
+    rlb();rsc();
     if(lr){
       document.getElementById('ri').innerHTML='Last: <span class="tm">'+lr+'</span>';
       document.getElementById('ri2').innerHTML='Last: <span class="tm">'+lr+'</span>';
     }
   }catch(e){
     log('ERR: '+e.message);
-    setSt(false,'Database error — '+e.message.substring(0,60));
+    // Even if Supabase fails, use baked scores
+    allScores=Object.assign({},BAKED_SCORES);
+    allBrackets=Object.assign({},BAKED_BRACKETS);
+    lr=BAKED_REFRESH;
+    setSt(false,'Offline mode — using cached scores');
+    rlb();rsc();
   }
 }
 
@@ -244,7 +402,7 @@ document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.pn').forEach(x=>x.classList.remove('on'));
   t.classList.add('on');document.getElementById('p-'+t.dataset.t).classList.add('on');
-  if(t.dataset.t==='lb'||t.dataset.t==='sc'||t.dataset.t==='gr')loadAll();
+  if(t.dataset.t==='lb'||t.dataset.t==='sc')loadAll();
   if(t.dataset.t==='dr')rdraft();
 })});
 
@@ -368,35 +526,6 @@ function rsc(){
     const rows=W[wt].map(([seed,nm,sch])=>{const pts=ws(wt,seed);
       return `<div class="swr"><span class="ssd">${seed}</span><span class="sn">${nm} <span class="ss">${sch}</span></span><span class="sp2${pts===0?' z':''}">${pts>0?pts.toFixed(1):'—'}</span></div>`;}).join('');
     return `<div class="swh">${wt} lbs</div>${rows}`;}).join('');
-}
-
-function rgr(){
-  const b=document.getElementById('grb');
-  if(!allPlayers.length){b.innerHTML='<div class="ey"><div class="ic">🏆</div>Submit picks in "My Picks" to start.</div>';return}
-  const revealed=picksRevealed();
-  const ent=allPlayers.map(p=>({id:p.id,name:p.name,picks:p.picks,self:p.id===myId}));
-  if(revealed) ent.sort((a,b2)=>ptot(b2.picks)-ptot(a.picks));
-  else ent.sort((a,b2)=>a.name.localeCompare(b2.name));
-  const hdr='<tr><th class="nm">Player</th><th class="tot">Total</th>'+WTS.map(wt=>`<th>${wt}</th>`).join('')+'</tr>';
-  const rows=ent.map(e=>{
-    const tot=revealed?ptot(e.picks):null;
-    const cells=WTS.map(wt=>{
-      const s=e.picks[wt];
-      if(!s)return'<td class="gc"><span class="gc-p z">—</span></td>';
-      if(!revealed)return`<td class="gc"><span class="gc-n">#${s}</span></td>`;
-      const wr=W[wt].find(w=>w[0]===s);
-      const pts=ws(wt,s);
-      const ln=wr?wr[1].split(' ').pop():'?';
-      const bst=wbr(wt,s);
-      const bIcon=bst==='champ'?'🟢':bst==='conso'?'🟡':bst==='out'?'🔴':'';
-      return `<td class="gc">${bIcon?bIcon+' ':''}<span class="gc-n">#${s} ${ln}</span><span class="gc-p${pts===0?' z':''}">${pts>0?pts.toFixed(1):'—'}</span></td>`;
-    }).join('');
-    const totCell=revealed
-      ?`<td class="tot">${tot>0?tot.toFixed(1):'0'}</td>`
-      :`<td class="tot" style="color:var(--dm);font-size:14px">🔒</td>`;
-    return `<tr${e.self?' class="me"':''}><td class="nm">${e.name}${e.self?' <span style="font-size:10px;color:var(--dm)">(you)</span>':''}</td>${totCell}${cells}</tr>`;
-  }).join('');
-  b.innerHTML=`<table class="grtbl"><thead>${hdr}</thead><tbody>${rows}</tbody></table>`;
 }
 
 // ====================== REFRESH ======================
