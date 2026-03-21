@@ -217,80 +217,82 @@ function ldLocal(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');if(s.m
 function svLocal(){localStorage.setItem(LS,JSON.stringify({myPicks,myName,myId}))}
 
 // ====================== BAKED-IN SCORES (Session 4 — through Semifinals + Blood Round) ======================
+// Guaranteed placement points included: finalists +12 (2nd), semi-losers +6 (6th), blood round survivors +3 (8th)
+// Semi-losers face blood round survivors in conso semis — worst case is 6th, not 4th
 const BAKED_SCORES={
-// 125
-"Luke Lilledahl":11,"Troy Spratley":10,"Jacob Moran":10,"Marc-Anthony McGowan":12,
-"Dean Peterson":3,"Sheldon Seymour":4.5,"Jore Volk":2.5,"Eddie Ventresca":2,
-"Nico Provo":3,"Tyler Klinsky":7,"Vincent Robinson":3.5,"Jett Strickenberger":4,
+// 125 — finalists +12, semi-losers +6, blood round survivors +3
+"Luke Lilledahl":23,"Troy Spratley":16,"Jacob Moran":16,"Marc-Anthony McGowan":24,
+"Dean Peterson":3,"Sheldon Seymour":7.5,"Jore Volk":5.5,"Eddie Ventresca":2,
+"Nico Provo":3,"Tyler Klinsky":10,"Vincent Robinson":6.5,"Jett Strickenberger":4,
 "Spencer Moore":1,"Kael Lauridsen":0.5,"Conrad Hendriksen":0.5,"Tyler Chappell":0.5,
 "Kysen Terukina":0.5,"Brady Roark":1.5,"Cooper Flynn":0.5,"Desmond Pleasant":0.5,
 "Ezekiel Witt":2,"Nic Bouzakis":3.5,"Stevo Poulin":1.5,"Maximo Renteria":1,
 "Mack Mauger":1,"Sulayman Bah":2,
-// 133
-"Jax Forrest":16,"Aaron Seidel":13.5,"Marcus Blaze":13.5,"Ben Davino":14,
-"Markel Baker":2,"Kyler Larkin":5,"Drake Ayala":5,"Lucas Byrd":2.5,
-"Tyler Knox":1.5,"Jacob Van Dee":3,"Julian Farber":4,"Maximilian Leete":2,
+// 133 — finalists +12, semi-losers +6, blood round survivors +3
+"Jax Forrest":28,"Aaron Seidel":19.5,"Marcus Blaze":19.5,"Ben Davino":26,
+"Markel Baker":2,"Kyler Larkin":5,"Drake Ayala":8,"Lucas Byrd":5.5,
+"Tyler Knox":4.5,"Jacob Van Dee":6,"Julian Farber":4,"Maximilian Leete":2,
 "Braxton Brown":0.5,"Tyler Ferrara":1,"Gage Walker":1,"Dominick Serrano":1,
 "T.K. Davis":1,"Evan Mougalian":1,"Zan Fugitt":0.5,"Will Betancourt":0.5,
 "Garrett Grice":1,"Gunner Andrick":0.5,"Marcel Lopez":2.5,"Ethan Berginc":1.5,
 "Carter Schmidt":2,
-// 141
-"Jesse Mendez":14.5,"Luke Stanich":11.5,"Brock Hardy":10.5,"Sergio Vega":12,
-"Vance Vombaur":3,"Anthony Echemendia":5.5,"Vince Cornella":4,"Nasir Bailey":3,
-"Elijah Griffin":2,"CJ Composto":2.5,"Wyatt Henson":3.5,"Carter Nogle":6,
+// 141 — finalists +12, semi-losers +6, blood round survivors +3
+"Jesse Mendez":26.5,"Luke Stanich":17.5,"Brock Hardy":16.5,"Sergio Vega":24,
+"Vance Vombaur":3,"Anthony Echemendia":8.5,"Vince Cornella":4,"Nasir Bailey":3,
+"Elijah Griffin":2,"CJ Composto":5.5,"Wyatt Henson":6.5,"Carter Nogle":9,
 "Ryan Jack":1.5,"Joey Olivieri":1.5,"Jack Consiglio":1.5,"Luke Simcox":0.5,
 "Jordan Titus":1,"Braeden Davis":1,"Haiden Drury":0.5,"Gable Porter":0.5,
 "Tyler Wells":1.5,"Dylan Chappell":1,"Nash Singleton":1,"Caedyn Ricciardi":1,
 "Aldo Hernandez":1,
-// 149
-"Shayne Van Ness":15,"Chance Lamer":10,"Lachlan McNeil":12,"Aden Valencia":11,
-"Casey Swiderski":3.5,"Carter Young":2,"Cross Wasilewski":3.5,"Jaxon Joy":3.5,
-"Ryder Block":4,"Gabe Willochell":2,"Collin Gaj":3.5,"Jacob Frost":4,
+// 149 — finalists +12, semi-losers +6, blood round survivors +3
+"Shayne Van Ness":27,"Chance Lamer":16,"Lachlan McNeil":18,"Aden Valencia":23,
+"Casey Swiderski":6.5,"Carter Young":2,"Cross Wasilewski":6.5,"Jaxon Joy":3.5,
+"Ryder Block":7,"Gabe Willochell":2,"Collin Gaj":6.5,"Jacob Frost":4,
 "Michael Gioffre":2.5,"Max Petersen":4,"Ethan Stiles":2,"Kaden Cassidy":3,
 "Koy Buesgens":1.5,"Andre Gonzales":0.5,"Brock Herman":0.5,"Caleb Tyus":1,
 "David Evans":1,"Austin McBurney":1.5,"Eugene Harney":0.5,"Caleb Rathjen":0.5,
-// 157
-"PJ Duke":14.5,"Landon Robideau":10,"Ty Watters":11,"Antrell Taylor":11.5,
-"Brandon Cannon":3.5,"Kaleb Larkin":5,"Meyer Shapiro":3.5,"Kannon Webster":4.5,
-"Cameron Catrabone":2.5,"Jude Swisher":2,"Kai Owen":3.5,"Daniel Cardenas":4.5,
+// 157 — finalists +12, semi-losers +6, blood round survivors +3
+"PJ Duke":20.5,"Landon Robideau":22,"Ty Watters":17,"Antrell Taylor":23.5,
+"Brandon Cannon":6.5,"Kaleb Larkin":5,"Meyer Shapiro":6.5,"Kannon Webster":7.5,
+"Cameron Catrabone":5.5,"Jude Swisher":2,"Kai Owen":3.5,"Daniel Cardenas":4.5,
 "Cael Swensen":1.5,"Jaivon Jones":1,"Vinny Zerban":1.5,"Bryce Lowery":2.5,
 "Ethen Miller":3.5,"Dylan Evans":1,"Kaleb Burgess":1.5,"DJ McGee":1,
 "Jimmy Harrington":1,"Charlie Millard":1,"Logan Rozynski":1,"Luke Mechler":1,
 "Yannis Charles":1,
-// 165
-"Mitchell Mesenbrink":14,"Cesar Alvan":12,"Mikey Caliendo":14.5,"Joey Blaze":10,
-"Bryce Hepner":2.5,"Nicco Ruiz":3.5,"EJ Parco":2,"Will Denny":3,
-"Max Brignola":2,"Ryder Downey":3,"Andrew Sparks":3,"Paddy Gallagher":4.5,
+// 165 — finalists +12, semi-losers +6, blood round survivors +3
+"Mitchell Mesenbrink":26,"Cesar Alvan":18,"Mikey Caliendo":26.5,"Joey Blaze":16,
+"Bryce Hepner":5.5,"Nicco Ruiz":6.5,"EJ Parco":2,"Will Denny":3,
+"Max Brignola":2,"Ryder Downey":3,"Andrew Sparks":6,"Paddy Gallagher":7.5,
 "Cody Walsh":1.5,"Sean Seefeldt":0.5,"Cody Goebel":0.5,"Ty Whalen":1.5,
 "Thomas Snipes":0.5,"LJ Araujo":2,"Tyler Lillard":2.5,"Jared Keslar":1.5,
 "LaDarion Lockett":1,"Matty Bianchi":1,"Noah Mulvaney":1,"Connor Euton":1.5,
-// 174
-"Levi Haines":16.5,"Patrick Kennedy":9,"Christopher Minto":13.5,"Cam Steed":12.5,
-"Beau Mantanona":2.5,"Carson Kharchla":3.5,"MJ Gaitan":4.5,"Danny Wask":2.5,
+// 174 — finalists +12, semi-losers +6, blood round survivors +3
+"Levi Haines":28.5,"Patrick Kennedy":15,"Christopher Minto":25.5,"Cam Steed":18.5,
+"Beau Mantanona":5.5,"Carson Kharchla":6.5,"MJ Gaitan":7.5,"Danny Wask":5.5,
 "Simon Ruiz":6.5,"Matty Singleton":3,"Carter Schubert":2,"Colin Kelly":2.5,
 "Moses Espinoza-Owens":1,"Alex Facundo":3.5,"Carter Baer":1,"Lenny Pinto":0.5,
 "Sergio Desiante":1,"Jared Simma":0.5,"Daschle Lamer":1,"Logan Messer":1,
 "Myles Takats":1,"Brody Baumann":0.5,"Luca Augustine":2.5,"Nick Fine":1,
 "Grant O'Dell":1,
-// 184
-"Rocco Welsh":14.5,"Brock Mantanona":12,"Max McEnelly":11.5,"Angelo Ferrari":10,
-"Silas Allred":3,"Brian Soldano":2,"Eddie Neitenbach":3.5,"Aeoden Sinclair":4,
-"Caleb Campos":2.5,"Zack Ryder":5.5,"James Conway":2,"Rylan Rogers":2,
+// 184 — finalists +12, semi-losers +6, blood round survivors +3
+"Rocco Welsh":26.5,"Brock Mantanona":18,"Max McEnelly":23.5,"Angelo Ferrari":16,
+"Silas Allred":3,"Brian Soldano":2,"Eddie Neitenbach":6.5,"Aeoden Sinclair":7,
+"Caleb Campos":5.5,"Zack Ryder":8.5,"James Conway":2,"Rylan Rogers":2,
 "Sal Perrine":1.5,"Jaden Bullock":1.5,"Shane Cartagena-Walsh":1,"Dylan Fishback":1,
 "Chris Moore":2.5,"Caleb Uhlenhopp":0.5,"Malachi DuVall":2.5,"Abraham Wojcikiewicz":2,
 "Nick Fox":0.5,"Jared McGill":0.5,"Chase Kranitz":0.5,"Jake Dailey":0.5,"Sam Goin":1,
-// 197
-"Josh Barr":15,"Joey Novak":14,"Stephen Little":9,"Cody Merrill":11.5,
-"Angelo Posada":5.5,"Colton Hawks":2,"Camden McDanel":3.5,"Remy Cotton":3,
-"Branson John":2,"Luke Geog":1.5,"Gabe Arnold":2,"Andrew Reall":1.5,
+// 197 — finalists +12, semi-losers +6, blood round survivors +3
+"Josh Barr":27,"Joey Novak":20,"Stephen Little":15,"Cody Merrill":23.5,
+"Angelo Posada":8.5,"Colton Hawks":2,"Camden McDanel":6.5,"Remy Cotton":3,
+"Branson John":5,"Luke Geog":1.5,"Gabe Arnold":5,"Andrew Reall":1.5,
 "Rocky Elam":1,"Mac Stout":1.5,"Justin Rademacher":1,"Sonny Sasso":2.5,
 "Gabe Sollars":2,"Zayne Lehman":1,"Rune Lawrence":1,"Evan Bates":1.5,
 "Dillon Bechtold":1,"Brock Zurawski":0.5,"Bennett Berge":1,"Mikey Squires":1.5,
 "Karson Tompkins":1,
-// 285
-"Yonger Bastida":14,"AJ Ferrari":11.5,"Taye Ghadiali":13,"Isaac Trumble":13,
-"Ben Kueter":2.5,"Juan Mora":2,"Hunter Catka":2,"Konner Doucet":4.5,
-"David Szuba":5,"Braxton Amos":3.5,"Dayton Pitzer":5.5,"Christian Carroll":5,
+// 285 — finalists +12, semi-losers +6, blood round survivors +3
+"Yonger Bastida":26,"AJ Ferrari":17.5,"Taye Ghadiali":19,"Isaac Trumble":25,
+"Ben Kueter":5.5,"Juan Mora":2,"Hunter Catka":2,"Konner Doucet":7.5,
+"David Szuba":8,"Braxton Amos":3.5,"Dayton Pitzer":5.5,"Christian Carroll":8,
 "Vincent Mueller":2.5,"Connor Barket":1.5,"Spencer Lanosga":0.5,"Koy Hopke":1.5,
 "Jack Forbes":1.5,"Nathan Taylor":2.5,"Stephan Monchery":0.5,"Nick Feldman":1,
 "Cole Mirasola":3,"Jimmy Mullen":1,"Brady Colbert":1.5,"Devon Dawson":1,"Mason Rebuck":1
