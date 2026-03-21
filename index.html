@@ -395,8 +395,6 @@ async function loadAll(){
     // Merge Supabase meta on top
     try{
       const mRows=await sbSelect('meta');
-      const lrR=(mRows||[]).find(m=>m.key==='lastRefresh');
-      if(lrR)lr=lrR.value;
       const brR=(mRows||[]).find(m=>m.key==='brackets');
       if(brR){const db=JSON.parse(brR.value);Object.assign(allBrackets,db);}
     }catch(e){}
