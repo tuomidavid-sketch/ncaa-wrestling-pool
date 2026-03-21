@@ -216,166 +216,166 @@ const LS='ncaa_pool_v3';
 function ldLocal(){try{const s=JSON.parse(localStorage.getItem(LS)||'{}');if(s.myPicks)myPicks=s.myPicks;if(s.myName)myName=s.myName;if(s.myId)myId=s.myId}catch(e){}}
 function svLocal(){localStorage.setItem(LS,JSON.stringify({myPicks,myName,myId}))}
 
-// ====================== BAKED-IN SCORES (Session 3 Brackets — through Quarterfinals) ======================
+// ====================== BAKED-IN SCORES (Session 4 — through Semifinals + Blood Round) ======================
 const BAKED_SCORES={
 // 125
-"Luke Lilledahl":10,"Troy Spratley":10,"Jacob Moran":10,"Marc-Anthony McGowan":11,
-"Dean Peterson":3,"Sheldon Seymour":4,"Jore Volk":2,"Eddie Ventresca":2,
-"Nico Provo":3,"Tyler Klinsky":6.5,"Vincent Robinson":3,"Jett Strickenberger":4,
+"Luke Lilledahl":11,"Troy Spratley":10,"Jacob Moran":10,"Marc-Anthony McGowan":12,
+"Dean Peterson":3,"Sheldon Seymour":4.5,"Jore Volk":2.5,"Eddie Ventresca":2,
+"Nico Provo":3,"Tyler Klinsky":7,"Vincent Robinson":3.5,"Jett Strickenberger":4,
 "Spencer Moore":1,"Kael Lauridsen":0.5,"Conrad Hendriksen":0.5,"Tyler Chappell":0.5,
 "Kysen Terukina":0.5,"Brady Roark":1.5,"Cooper Flynn":0.5,"Desmond Pleasant":0.5,
 "Ezekiel Witt":2,"Nic Bouzakis":3.5,"Stevo Poulin":1.5,"Maximo Renteria":1,
 "Mack Mauger":1,"Sulayman Bah":2,
 // 133
-"Jax Forrest":14,"Aaron Seidel":13.5,"Marcus Blaze":13.5,"Ben Davino":13,
-"Markel Baker":2,"Kyler Larkin":5,"Drake Ayala":4.5,"Lucas Byrd":2,
-"Tyler Knox":1,"Jacob Van Dee":2.5,"Julian Farber":4,"Maximilian Leete":2,
+"Jax Forrest":16,"Aaron Seidel":13.5,"Marcus Blaze":13.5,"Ben Davino":14,
+"Markel Baker":2,"Kyler Larkin":5,"Drake Ayala":5,"Lucas Byrd":2.5,
+"Tyler Knox":1.5,"Jacob Van Dee":3,"Julian Farber":4,"Maximilian Leete":2,
 "Braxton Brown":0.5,"Tyler Ferrara":1,"Gage Walker":1,"Dominick Serrano":1,
 "T.K. Davis":1,"Evan Mougalian":1,"Zan Fugitt":0.5,"Will Betancourt":0.5,
 "Garrett Grice":1,"Gunner Andrick":0.5,"Marcel Lopez":2.5,"Ethan Berginc":1.5,
 "Carter Schmidt":2,
 // 141
-"Jesse Mendez":13.5,"Luke Stanich":11.5,"Brock Hardy":10.5,"Sergio Vega":11,
-"Vance Vombaur":3,"Anthony Echemendia":3,"Vince Cornella":4,"Nasir Bailey":3,
-"Elijah Griffin":2,"CJ Composto":2,"Wyatt Henson":3,"Carter Nogle":3.5,
+"Jesse Mendez":14.5,"Luke Stanich":11.5,"Brock Hardy":10.5,"Sergio Vega":12,
+"Vance Vombaur":3,"Anthony Echemendia":5.5,"Vince Cornella":4,"Nasir Bailey":3,
+"Elijah Griffin":2,"CJ Composto":2.5,"Wyatt Henson":3.5,"Carter Nogle":6,
 "Ryan Jack":1.5,"Joey Olivieri":1.5,"Jack Consiglio":1.5,"Luke Simcox":0.5,
 "Jordan Titus":1,"Braeden Davis":1,"Haiden Drury":0.5,"Gable Porter":0.5,
 "Tyler Wells":1.5,"Dylan Chappell":1,"Nash Singleton":1,"Caedyn Ricciardi":1,
 "Aldo Hernandez":1,
 // 149
-"Shayne Van Ness":12.5,"Chance Lamer":10,"Lachlan McNeil":12,"Aden Valencia":10,
-"Casey Swiderski":3,"Carter Young":2,"Cross Wasilewski":3,"Jaxon Joy":3.5,
-"Ryder Block":3.5,"Gabe Willochell":2,"Collin Gaj":3,"Jacob Frost":4,
+"Shayne Van Ness":15,"Chance Lamer":10,"Lachlan McNeil":12,"Aden Valencia":11,
+"Casey Swiderski":3.5,"Carter Young":2,"Cross Wasilewski":3.5,"Jaxon Joy":3.5,
+"Ryder Block":4,"Gabe Willochell":2,"Collin Gaj":3.5,"Jacob Frost":4,
 "Michael Gioffre":2.5,"Max Petersen":4,"Ethan Stiles":2,"Kaden Cassidy":3,
 "Koy Buesgens":1.5,"Andre Gonzales":0.5,"Brock Herman":0.5,"Caleb Tyus":1,
 "David Evans":1,"Austin McBurney":1.5,"Eugene Harney":0.5,"Caleb Rathjen":0.5,
 // 157
-"PJ Duke":14.5,"Landon Robideau":9,"Ty Watters":11,"Antrell Taylor":10.5,
-"Brandon Cannon":2,"Kaleb Larkin":5,"Meyer Shapiro":3,"Kannon Webster":3,
-"Cameron Catrabone":2,"Jude Swisher":2,"Kai Owen":3.5,"Daniel Cardenas":4.5,
+"PJ Duke":14.5,"Landon Robideau":10,"Ty Watters":11,"Antrell Taylor":11.5,
+"Brandon Cannon":3.5,"Kaleb Larkin":5,"Meyer Shapiro":3.5,"Kannon Webster":4.5,
+"Cameron Catrabone":2.5,"Jude Swisher":2,"Kai Owen":3.5,"Daniel Cardenas":4.5,
 "Cael Swensen":1.5,"Jaivon Jones":1,"Vinny Zerban":1.5,"Bryce Lowery":2.5,
 "Ethen Miller":3.5,"Dylan Evans":1,"Kaleb Burgess":1.5,"DJ McGee":1,
 "Jimmy Harrington":1,"Charlie Millard":1,"Logan Rozynski":1,"Luke Mechler":1,
 "Yannis Charles":1,
 // 165
-"Mitchell Mesenbrink":11.5,"Cesar Alvan":12,"Mikey Caliendo":13.5,"Joey Blaze":10,
-"Bryce Hepner":2,"Nicco Ruiz":3,"EJ Parco":2,"Will Denny":3,
-"Max Brignola":2,"Ryder Downey":3,"Andrew Sparks":2.5,"Paddy Gallagher":4,
+"Mitchell Mesenbrink":14,"Cesar Alvan":12,"Mikey Caliendo":14.5,"Joey Blaze":10,
+"Bryce Hepner":2.5,"Nicco Ruiz":3.5,"EJ Parco":2,"Will Denny":3,
+"Max Brignola":2,"Ryder Downey":3,"Andrew Sparks":3,"Paddy Gallagher":4.5,
 "Cody Walsh":1.5,"Sean Seefeldt":0.5,"Cody Goebel":0.5,"Ty Whalen":1.5,
 "Thomas Snipes":0.5,"LJ Araujo":2,"Tyler Lillard":2.5,"Jared Keslar":1.5,
 "LaDarion Lockett":1,"Matty Bianchi":1,"Noah Mulvaney":1,"Connor Euton":1.5,
 // 174
-"Levi Haines":14,"Patrick Kennedy":9,"Christopher Minto":12.5,"Cam Steed":12.5,
-"Beau Mantanona":2,"Carson Kharchla":3,"MJ Gaitan":4,"Danny Wask":2,
+"Levi Haines":16.5,"Patrick Kennedy":9,"Christopher Minto":13.5,"Cam Steed":12.5,
+"Beau Mantanona":2.5,"Carson Kharchla":3.5,"MJ Gaitan":4.5,"Danny Wask":2.5,
 "Simon Ruiz":6.5,"Matty Singleton":3,"Carter Schubert":2,"Colin Kelly":2.5,
 "Moses Espinoza-Owens":1,"Alex Facundo":3.5,"Carter Baer":1,"Lenny Pinto":0.5,
 "Sergio Desiante":1,"Jared Simma":0.5,"Daschle Lamer":1,"Logan Messer":1,
 "Myles Takats":1,"Brody Baumann":0.5,"Luca Augustine":2.5,"Nick Fine":1,
 "Grant O'Dell":1,
 // 184
-"Rocco Welsh":13.5,"Brock Mantanona":12,"Max McEnelly":10.5,"Angelo Ferrari":10,
-"Silas Allred":3,"Brian Soldano":2,"Eddie Neitenbach":3,"Aeoden Sinclair":3.5,
-"Caleb Campos":2,"Zack Ryder":3,"James Conway":2,"Rylan Rogers":2,
+"Rocco Welsh":14.5,"Brock Mantanona":12,"Max McEnelly":11.5,"Angelo Ferrari":10,
+"Silas Allred":3,"Brian Soldano":2,"Eddie Neitenbach":3.5,"Aeoden Sinclair":4,
+"Caleb Campos":2.5,"Zack Ryder":5.5,"James Conway":2,"Rylan Rogers":2,
 "Sal Perrine":1.5,"Jaden Bullock":1.5,"Shane Cartagena-Walsh":1,"Dylan Fishback":1,
 "Chris Moore":2.5,"Caleb Uhlenhopp":0.5,"Malachi DuVall":2.5,"Abraham Wojcikiewicz":2,
 "Nick Fox":0.5,"Jared McGill":0.5,"Chase Kranitz":0.5,"Jake Dailey":0.5,"Sam Goin":1,
 // 197
-"Josh Barr":13,"Joey Novak":14,"Stephen Little":9,"Cody Merrill":10.5,
-"Angelo Posada":4,"Colton Hawks":2,"Camden McDanel":3,"Remy Cotton":3,
-"Branson John":1.5,"Luke Geog":1.5,"Gabe Arnold":1.5,"Andrew Reall":1.5,
+"Josh Barr":15,"Joey Novak":14,"Stephen Little":9,"Cody Merrill":11.5,
+"Angelo Posada":5.5,"Colton Hawks":2,"Camden McDanel":3.5,"Remy Cotton":3,
+"Branson John":2,"Luke Geog":1.5,"Gabe Arnold":2,"Andrew Reall":1.5,
 "Rocky Elam":1,"Mac Stout":1.5,"Justin Rademacher":1,"Sonny Sasso":2.5,
 "Gabe Sollars":2,"Zayne Lehman":1,"Rune Lawrence":1,"Evan Bates":1.5,
 "Dillon Bechtold":1,"Brock Zurawski":0.5,"Bennett Berge":1,"Mikey Squires":1.5,
 "Karson Tompkins":1,
 // 285
-"Yonger Bastida":12,"AJ Ferrari":11.5,"Taye Ghadiali":13,"Isaac Trumble":12,
-"Ben Kueter":2,"Juan Mora":2,"Hunter Catka":2,"Konner Doucet":2,
-"David Szuba":4.5,"Braxton Amos":3.5,"Dayton Pitzer":5.5,"Christian Carroll":4.5,
+"Yonger Bastida":14,"AJ Ferrari":11.5,"Taye Ghadiali":13,"Isaac Trumble":13,
+"Ben Kueter":2.5,"Juan Mora":2,"Hunter Catka":2,"Konner Doucet":4.5,
+"David Szuba":5,"Braxton Amos":3.5,"Dayton Pitzer":5.5,"Christian Carroll":5,
 "Vincent Mueller":2.5,"Connor Barket":1.5,"Spencer Lanosga":0.5,"Koy Hopke":1.5,
 "Jack Forbes":1.5,"Nathan Taylor":2.5,"Stephan Monchery":0.5,"Nick Feldman":1,
 "Cole Mirasola":3,"Jimmy Mullen":1,"Brady Colbert":1.5,"Devon Dawson":1,"Mason Rebuck":1
 };
 
 const BAKED_BRACKETS={
-// 125
-"luke lilledahl":"champ","troy spratley":"champ","jacob moran":"champ","marc-anthony mcgowan":"champ",
-"dean peterson":"conso","sheldon seymour":"conso","jore volk":"conso","eddie ventresca":"conso",
-"nico provo":"conso","tyler klinsky":"conso","vincent robinson":"conso","jett strickenberger":"conso",
+// 125 — finalists: Lilledahl, McGowan; semi-losers: Spratley, Moran; blood round survivors: Seymour, Klinsky, Robinson, Volk
+"luke lilledahl":"champ","marc-anthony mcgowan":"champ","troy spratley":"conso","jacob moran":"conso",
+"sheldon seymour":"conso","tyler klinsky":"conso","vincent robinson":"conso","jore volk":"conso",
+"dean peterson":"out","eddie ventresca":"out","nico provo":"out","jett strickenberger":"out",
 "spencer moore":"out","kael lauridsen":"out","conrad hendriksen":"out","tyler chappell":"out",
 "kysen terukina":"out","brady roark":"out","cooper flynn":"out","desmond pleasant":"out",
 "ezekiel witt":"out","nic bouzakis":"out","stevo poulin":"out","maximo renteria":"out",
 "mack mauger":"out","sulayman bah":"out",
-// 133
-"jax forrest":"champ","aaron seidel":"champ","marcus blaze":"champ","ben davino":"champ",
-"markel baker":"conso","kyler larkin":"conso","drake ayala":"conso","lucas byrd":"conso",
-"tyler knox":"conso","jacob van dee":"conso","julian farber":"conso","maximilian leete":"conso",
+// 133 — finalists: Forrest, Davino; semi-losers: Seidel, Blaze; blood round survivors: Ayala, Byrd, Knox, Van Dee
+"jax forrest":"champ","ben davino":"champ","aaron seidel":"conso","marcus blaze":"conso",
+"drake ayala":"conso","lucas byrd":"conso","tyler knox":"conso","jacob van dee":"conso",
+"markel baker":"out","kyler larkin":"out","julian farber":"out","maximilian leete":"out",
 "braxton brown":"out","tyler ferrara":"out","gage walker":"out","dominick serrano":"out",
 "t.k. davis":"out","evan mougalian":"out","zan fugitt":"out","will betancourt":"out",
 "garrett grice":"out","gunner andrick":"out","marcel lopez":"out","ethan berginc":"out",
 "carter schmidt":"out",
-// 141
-"jesse mendez":"champ","luke stanich":"champ","brock hardy":"champ","sergio vega":"champ",
-"vance vombaur":"conso","anthony echemendia":"conso","vince cornella":"conso","nasir bailey":"conso",
-"elijah griffin":"conso","cj composto":"conso","wyatt henson":"conso","carter nogle":"conso",
+// 141 — finalists: Mendez, Vega; semi-losers: Stanich, Hardy; blood round survivors: Echemendia, Composto, Henson, Nogle
+"jesse mendez":"champ","sergio vega":"champ","luke stanich":"conso","brock hardy":"conso",
+"anthony echemendia":"conso","cj composto":"conso","wyatt henson":"conso","carter nogle":"conso",
+"vance vombaur":"out","vince cornella":"out","nasir bailey":"out","elijah griffin":"out",
 "ryan jack":"out","joey olivieri":"out","jack consiglio":"out","luke simcox":"out",
 "jordan titus":"out","braeden davis":"out","haiden drury":"out","gable porter":"out",
 "tyler wells":"out","dylan chappell":"out","nash singleton":"out","caedyn ricciardi":"out",
 "aldo hernandez":"out",
-// 149
-"shayne van ness":"champ","chance lamer":"champ","lachlan mcneil":"champ","aden valencia":"champ",
-"casey swiderski":"conso","carter young":"conso","cross wasilewski":"conso","jaxon joy":"conso",
-"ryder block":"conso","gabe willochell":"conso","collin gaj":"conso","jacob frost":"conso",
+// 149 — finalists: Van Ness, Valencia; semi-losers: Lamer, McNeil; blood round survivors: Swiderski, Block, Gaj, Wasilewski
+"shayne van ness":"champ","aden valencia":"champ","chance lamer":"conso","lachlan mcneil":"conso",
+"casey swiderski":"conso","ryder block":"conso","collin gaj":"conso","cross wasilewski":"conso",
+"carter young":"out","gabe willochell":"out","jaxon joy":"out","jacob frost":"out",
 "michael gioffre":"out","max petersen":"out","ethan stiles":"out","kaden cassidy":"out",
 "koy buesgens":"out","andre gonzales":"out","brock herman":"out","caleb tyus":"out",
 "david evans":"out","austin mcburney":"out","eugene harney":"out","caleb rathjen":"out",
-// 157
-"pj duke":"champ","landon robideau":"champ","ty watters":"champ","antrell taylor":"champ",
-"brandon cannon":"conso","kaleb larkin":"conso","meyer shapiro":"conso","kannon webster":"conso",
-"cameron catrabone":"conso","jude swisher":"conso","kai owen":"conso","daniel cardenas":"conso",
+// 157 — finalists: Robideau, Taylor; semi-losers: Duke, Watters; blood round survivors: Cannon, Catrabone, Shapiro, Webster
+"landon robideau":"champ","antrell taylor":"champ","pj duke":"conso","ty watters":"conso",
+"brandon cannon":"conso","cameron catrabone":"conso","meyer shapiro":"conso","kannon webster":"conso",
+"kaleb larkin":"out","jude swisher":"out","kai owen":"out","daniel cardenas":"out",
 "cael swensen":"out","jaivon jones":"out","vinny zerban":"out","bryce lowery":"out",
 "ethen miller":"out","dylan evans":"out","kaleb burgess":"out","dj mcgee":"out",
 "jimmy harrington":"out","charlie millard":"out","logan rozynski":"out","luke mechler":"out",
 "yannis charles":"out",
-// 165
-"mitchell mesenbrink":"champ","cesar alvan":"champ","mikey caliendo":"champ","joey blaze":"champ",
-"bryce hepner":"conso","nicco ruiz":"conso","ej parco":"conso","will denny":"conso",
-"max brignola":"conso","ryder downey":"conso","andrew sparks":"conso","paddy gallagher":"conso",
+// 165 — finalists: Mesenbrink, Caliendo; semi-losers: Alvan, Joey Blaze; blood round survivors: Gallagher, Hepner, Ruiz, Sparks
+"mitchell mesenbrink":"champ","mikey caliendo":"champ","cesar alvan":"conso","joey blaze":"conso",
+"paddy gallagher":"conso","bryce hepner":"conso","nicco ruiz":"conso","andrew sparks":"conso",
+"ej parco":"out","will denny":"out","max brignola":"out","ryder downey":"out",
 "cody walsh":"out","sean seefeldt":"out","cody goebel":"out","ty whalen":"out",
 "thomas snipes":"out","lj araujo":"out","tyler lillard":"out","jared keslar":"out",
 "ladarion lockett":"out","matty bianchi":"out","noah mulvaney":"out","connor euton":"out",
-// 174
-"levi haines":"champ","patrick kennedy":"champ","christopher minto":"champ","cam steed":"champ",
+// 174 — finalists: Haines, Minto; semi-losers: Kennedy, Steed; blood round survivors: Mantanona, Kharchla, Gaitan, Wask
+"levi haines":"champ","christopher minto":"champ","patrick kennedy":"conso","cam steed":"conso",
 "beau mantanona":"conso","carson kharchla":"conso","mj gaitan":"conso","danny wask":"conso",
-"simon ruiz":"conso","matty singleton":"conso","carter schubert":"conso","colin kelly":"conso",
+"simon ruiz":"out","matty singleton":"out","carter schubert":"out","colin kelly":"out",
 "moses espinoza-owens":"out","alex facundo":"out","carter baer":"out","lenny pinto":"out",
 "sergio desiante":"out","jared simma":"out","daschle lamer":"out","logan messer":"out",
 "myles takats":"out","brody baumann":"out","luca augustine":"out","nick fine":"out",
 "grant o'dell":"out",
-// 184
-"rocco welsh":"champ","brock mantanona":"champ","max mcenelly":"champ","angelo ferrari":"champ",
-"silas allred":"conso","brian soldano":"conso","eddie neitenbach":"conso","aeoden sinclair":"conso",
-"caleb campos":"conso","zack ryder":"conso","james conway":"conso","rylan rogers":"conso",
+// 184 — finalists: Welsh, McEnelly; semi-losers: Brock Mantanona, Ferrari; blood round survivors: Campos, Sinclair, Ryder, Neitenbach
+"rocco welsh":"champ","max mcenelly":"champ","brock mantanona":"conso","angelo ferrari":"conso",
+"caleb campos":"conso","aeoden sinclair":"conso","zack ryder":"conso","eddie neitenbach":"conso",
+"silas allred":"out","brian soldano":"out","james conway":"out","rylan rogers":"out",
 "sal perrine":"out","jaden bullock":"out","shane cartagena-walsh":"out","dylan fishback":"out",
 "chris moore":"out","caleb uhlenhopp":"out","malachi duvall":"out","abraham wojcikiewicz":"out",
 "nick fox":"out","jared mcgill":"out","chase kranitz":"out","jake dailey":"out","sam goin":"out",
-// 197
-"josh barr":"champ","joey novak":"champ","stephen little":"champ","cody merrill":"champ",
-"angelo posada":"conso","colton hawks":"conso","camden mcdanel":"conso","remy cotton":"conso",
-"branson john":"conso","luke geog":"conso","gabe arnold":"conso","andrew reall":"conso",
+// 197 — finalists: Barr, Merrill; semi-losers: Novak, Little; blood round survivors: John, Posada, Arnold, McDanel
+"josh barr":"champ","cody merrill":"champ","joey novak":"conso","stephen little":"conso",
+"branson john":"conso","angelo posada":"conso","gabe arnold":"conso","camden mcdanel":"conso",
+"colton hawks":"out","luke geog":"out","remy cotton":"out","andrew reall":"out",
 "rocky elam":"out","mac stout":"out","justin rademacher":"out","sonny sasso":"out",
 "gabe sollars":"out","zayne lehman":"out","rune lawrence":"out","evan bates":"out",
 "dillon bechtold":"out","brock zurawski":"out","bennett berge":"out","mikey squires":"out",
 "karson tompkins":"out",
-// 285
-"yonger bastida":"champ","aj ferrari":"champ","taye ghadiali":"champ","isaac trumble":"champ",
-"ben kueter":"conso","juan mora":"conso","hunter catka":"conso","konner doucet":"conso",
-"david szuba":"conso","braxton amos":"conso","dayton pitzer":"conso","christian carroll":"conso",
+// 285 — finalists: Bastida, Trumble; semi-losers: AJ Ferrari, Ghadiali; blood round survivors: Szuba, Kueter, Doucet, Carroll
+"yonger bastida":"champ","isaac trumble":"champ","aj ferrari":"conso","taye ghadiali":"conso",
+"david szuba":"conso","ben kueter":"conso","konner doucet":"conso","christian carroll":"conso",
+"juan mora":"out","braxton amos":"out","dayton pitzer":"out","hunter catka":"out",
 "vincent mueller":"out","connor barket":"out","spencer lanosga":"out","koy hopke":"out",
 "jack forbes":"out","nathan taylor":"out","stephan monchery":"out","nick feldman":"out",
 "cole mirasola":"out","jimmy mullen":"out","brady colbert":"out","devon dawson":"out","mason rebuck":"out"
 };
 
-const BAKED_REFRESH="March 20, 2026 — Session 3 (through Quarterfinals + Conso R3)";
+const BAKED_REFRESH="March 20, 2026 — Session 4 (through Semifinals + Blood Round)";
 
 // ====================== LOAD ======================
 async function loadAll(){
