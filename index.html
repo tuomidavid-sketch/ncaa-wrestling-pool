@@ -640,9 +640,9 @@ async function parseAndPush(){
     const brackets={};
     for(const name of allNames){
       const l=losses[name]||0;
-      if(l===0)brackets[name]='champ';
-      else if(l===1)brackets[name]='conso';
-      else brackets[name]='out';
+      if(l===0)brackets[name]='champ';      // 0 losses = green
+      else if(l===1)brackets[name]='conso'; // 1 loss = yellow
+      else brackets[name]='out';            // 2 losses = red (unless placing top 8)
     }
     // Placement lines
     const allLines=[...(rawChamp?rawChamp.split('\n'):[]),...(rawConso?rawConso.split('\n'):[])];
@@ -654,6 +654,9 @@ async function parseAndPush(){
       if(!pts[name])pts[name]={adv:0,bonus:0};
       const plPts={['1st']:16,['2nd']:12,['3rd']:10,['4th']:9,['5th']:7,['6th']:6,['7th']:4,['8th']:3};
       pts[name].place=plPts[place]||0;
+      // Top-8 placers with 2 losses (e.g. 4th/6th/8th place) stay yellow, not red
+      const nk=name.toLowerCase();
+      if(brackets[nk]==='out')brackets[nk]='conso';
     }
     const rows=[];
     for(const[name,d]of Object.entries(pts)){
